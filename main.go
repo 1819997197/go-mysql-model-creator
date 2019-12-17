@@ -1,6 +1,6 @@
 package main
 
-import "go-mysql-model-creator/code"
+import "github.com/laixyz/go-mysql-model-creator/code"
 
 /*
 
