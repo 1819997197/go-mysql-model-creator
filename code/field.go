@@ -77,12 +77,12 @@ func (f MysqlTableField) CommentX() (schemaField SchemaField) {
 
 		if len(arrTmp) == 1 {
 			//规则一,备注只有一项时，符合别名规则则为别名，符合类型则为类型，否则为字段标题名称
-			if f.isFieldAlias(arrTmp[0]) {
-				schemaField.FieldAlias = arrTmp[0]
+			ok, t := f.isFieldType(arrTmp[0])
+			if ok {
+				schemaField.FieldType = t
 			} else {
-				ok, t := f.isFieldType(arrTmp[0])
-				if ok {
-					schemaField.FieldType = t
+				if f.isFieldAlias(arrTmp[0]) {
+					schemaField.FieldAlias = arrTmp[0]
 				} else {
 					schemaField.FieldTitle = arrTmp[0]
 				}
@@ -90,12 +90,12 @@ func (f MysqlTableField) CommentX() (schemaField SchemaField) {
 		}
 		if len(arrTmp) > 1 {
 			for _, tmp := range arrTmp {
-				if f.isFieldAlias(tmp) {
-					schemaField.FieldAlias = tmp
+				ok, t := f.isFieldType(tmp)
+				if ok {
+					schemaField.FieldType = t
 				} else {
-					ok, t := f.isFieldType(tmp)
-					if ok {
-						schemaField.FieldType = t
+					if f.isFieldAlias(tmp) && schemaField.FieldAlias == "" {
+						schemaField.FieldAlias = tmp
 					} else {
 						if schemaField.FieldTitle == "" {
 							schemaField.FieldTitle = tmp
@@ -172,6 +172,7 @@ func (f MysqlTableField) isUnsigned() bool {
 
 // IsFieldType 判断是否支持的类型
 func (f MysqlTableField) isFieldType(t string) (ok bool, goLangType string) {
+	t = strings.ToLower(t)
 	if _, ok = ExtendFieldTypeLimit[t]; ok {
 		return ok, ExtendFieldTypeLimit[t]
 	}
@@ -203,9 +204,8 @@ func (sf SchemaField) Default() string {
 		case sf.IsInteger:
 			return "0"
 		case sf.FieldType == "time.Time":
-
 			return "time.Now()"
-		case sf.FieldType == "typexzy.ArrayString" || sf.FieldType == "typexzy.Integers":
+		case sf.FieldType == "typexyz.ArrayString" || sf.FieldType == "typexyz.Integers":
 			return sf.FieldType + "{}"
 		case sf.FieldType == "typexyz.Boolean":
 			return "false"
@@ -225,7 +225,7 @@ func (sf SchemaField) Default() string {
 		switch {
 		case sf.FieldType == "time.Time":
 			return "time.Now()"
-		case sf.FieldType == "typexzy.ArrayString" || sf.FieldType == "typexzy.Integers":
+		case sf.FieldType == "typexyz.ArrayString" || sf.FieldType == "typexyz.Integers":
 			return sf.FieldType + "{}"
 		case sf.FieldType == "typexyz.Boolean":
 			return "false"

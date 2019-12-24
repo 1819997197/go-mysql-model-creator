@@ -60,7 +60,11 @@ func TableDoc(table MysqlTable) string {
 	}
 	var tableNameDoc string = "// " + table.TableAlias + "TableName 数据库表名\nconst " + table.TableAlias + "TableName = \"`" + table.Table + "`\"\n\n"
 	structDoc = "type " + table.TableAlias + " struct {\n" + structDoc + "}\n"
-	fieldDoc = "\n// " + table.TableAlias + "Fields 字段结构体 \ntype " + table.TableAlias + "Fields struct{\n" + fieldDoc + "}\n"
+	if table.FieldStructDoc {
+		fieldDoc = "\n// " + table.TableAlias + "Fields 字段结构体 \ntype " + table.TableAlias + "Fields struct{\n" + fieldDoc + "}\n"
+	} else {
+		fieldDoc = ""
+	}
 	sqlInsert = "\tINSERT INTO `" + table.Table + "` SET " + strings.Join(table.FieldNames, "=?, ") + "=? \n"
 	sqlInsert += "\tUPDATE `" + table.Table + "` SET " + strings.Join(table.FieldNames, "=?, ") + "=? \n"
 	sqlInsert += "\tDELETE FROM `" + table.Table + "` WHERE \n"

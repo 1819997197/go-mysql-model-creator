@@ -3,7 +3,7 @@ package code
 //项目名称、版本、项目URL常量设置
 const (
 	ProjectName = "go-MySQL-Model-Creator"
-	Version     = "2.0"
+	Version     = "1.0.0"
 	ProjectURL  = "https://github.com/laixyz/go-mysql-model-creator"
 )
 

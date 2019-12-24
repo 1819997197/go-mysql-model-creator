@@ -20,6 +20,7 @@ type MysqlTable struct {
 	IsOnlyPrimary       bool                   //是否唯一主键
 	OnlyPrimaryKeyField string                 //唯一主键字段
 	Doc                 string                 //文档
+	FieldStructDoc      bool                   //字段结构体文档
 	IsModel             bool                   //是否具备建模条件
 	HasTime             bool                   //是否有datetime date字段
 	HasExtendType       bool                   //是否有指定Typexyz支持的扩展类型的ArrayString Integers Boolean,Timestamp类型

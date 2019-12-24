@@ -49,6 +49,8 @@ func Exec() {
 	var destTableName string
 	flag.StringVar(&destTableName, "table", "", "表名, 缺省时则生成所有表, 指定表名则只生成指定表的文件,多个表时以半角逗号隔开")
 
+	var fieldStructDoc bool
+	flag.BoolVar(&fieldStructDoc, "field", false, "是否生成字段SQL所需要的结构体")
 	flag.BoolVar(&DebugMode, "debug", false, "是否开启调试模式，调试模式不会生成文件")
 
 	flag.Parse()
@@ -107,11 +109,13 @@ func Exec() {
 		return
 	}
 	for _, t := range tmpTables {
+		t.FieldStructDoc = fieldStructDoc
 		doc := TableDoc(t)
 		header := Header(t, packageName)
-		err = utils.FileWrite(distPath+"/"+t.TableAlias+".go", header+doc)
+		fileName := distPath + "/" + strings.ToLower(t.TableAlias) + ".go"
+		err = utils.FileWrite(fileName, header+doc)
 		if err != nil {
-			fmt.Println("FileWrite "+distPath+"/"+t.TableAlias+".go"+" 发生错误: ", err.Error())
+			fmt.Println("FileWrite "+fileName+" 发生错误: ", err.Error())
 		}
 		//Debug2Json(t.FieldNames)
 	}
